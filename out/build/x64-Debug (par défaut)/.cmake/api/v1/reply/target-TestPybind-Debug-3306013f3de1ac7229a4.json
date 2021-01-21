@@ -13,7 +13,9 @@
 	{
 		"commands" : 
 		[
-			"add_executable"
+			"add_executable",
+			"include_directories",
+			"target_link_libraries"
 		],
 		"files" : 
 		[
@@ -27,7 +29,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 9,
+				"line" : 13,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 10,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 14,
 				"parent" : 0
 			}
 		]
@@ -39,6 +53,19 @@
 			[
 				{
 					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "A:/Pierre/Bureau/TestPybind/extern/pybind11/include"
+				},
+				{
+					"backtrace" : 3,
+					"isSystem" : true,
+					"path" : "C:/Users/Pierre/AppData/Local/Programs/Python/Python38/include"
 				}
 			],
 			"language" : "CXX",
@@ -60,6 +87,10 @@
 			{
 				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
 				"role" : "flags"
+			},
+			{
+				"fragment" : "C:\\Users\\Pierre\\AppData\\Local\\Programs\\Python\\Python38\\libs\\python38.lib",
+				"role" : "libraries"
 			},
 			{
 				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
