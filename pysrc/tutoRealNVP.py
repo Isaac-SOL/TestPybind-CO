@@ -6,8 +6,9 @@ from tensorflow.keras import layers
 from tensorflow.keras import regularizers
 from sklearn.datasets import make_moons
 import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow_probability as tfp
+
+print("test")
 
 # Loading data
 
@@ -142,33 +143,6 @@ history = model.fit(normalized_data, batch_size=256, epochs=100, verbose=2, vali
 
 # Performance validation
 
-plt.figure(figsize=(15, 10))
-plt.plot(history.history["loss"])
-plt.plot(history.history["val_loss"])
-plt.title("model loss")
-plt.legend(["train", "validation"], loc="upper right")
-plt.ylabel("loss")
-plt.xlabel("epoch")
-
-# From data to latent space.
-z = model.forward(normalized_data)
-
 # From latent space to data.
-samples = model.distribution.sample(3000)
-x  = model.inverse(samples)
-
-f, axes = plt.subplots(2, 2)
-f.set_size_inches(20, 15)
-
-axes[0, 0].scatter(normalized_data[:, 0], normalized_data[:, 1], color="r")
-axes[0, 0].set(title="Inference data space X", xlabel="x", ylabel="y")
-axes[0, 1].scatter(z[:, 0], z[:, 1], color="r")
-axes[0, 1].set(title="Inference latent space Z", xlabel="x", ylabel="y")
-axes[0, 1].set_xlim([-3.5, 4])
-axes[0, 1].set_ylim([-4, 4])
-axes[1, 0].scatter(samples[:, 0], samples[:, 1], color="g")
-axes[1, 0].set(title="Generated latent space Z", xlabel="x", ylabel="y")
-axes[1, 1].scatter(x[:, 0], x[:, 1], color="g")
-axes[1, 1].set(title="Generated data space X", label="x", ylabel="y")
-axes[1, 1].set_xlim([-2, 2])
-axes[1, 1].set_ylim([-2, 2])
+samples = model.distribution.sample(100)
+warped_samples = model.inverse(samples)
