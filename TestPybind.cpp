@@ -48,11 +48,16 @@ public:
 		catch (py::error_already_set& err) {
 			std::cerr << "Exception Python levée :" << std::endl;
 			std::cerr << err.what() << std::endl;
+			std::system("pause");
+			exit(1);
 		}
 	}
 
-	void train(int batchSize = 256, int epochs = 20, float validationSplit = 0.2f) {
+	void train(samples_t& distribData, int batchSize = 256, int epochs = 20, float validationSplit = 0.2f) {
 		try {
+			if (!distribData.empty()) {
+				scope["normalized_data"] = toNumpy(distribData);
+			}
 			py::eval("model.fit(normalized_data, verbose=2, batch_size=" + std::to_string(batchSize)
 				+ ", epochs=" + std::to_string(epochs)
 				+ ", validation_split=" + std::to_string(validationSplit)
@@ -61,6 +66,8 @@ public:
 		catch (py::error_already_set& err) {
 			std::cerr << "Exception Python levée :" << std::endl;
 			std::cerr << err.what() << std::endl;
+			std::system("pause");
+			exit(1);
 		}
 	}
 
@@ -73,6 +80,8 @@ public:
 		catch (py::error_already_set& err) {
 			std::cerr << "Exception Python levée :" << std::endl;
 			std::cerr << err.what() << std::endl;
+			std::system("pause");
+			exit(1);
 		}
 		return {};
 	}
@@ -86,6 +95,8 @@ public:
 		catch (py::error_already_set& err) {
 			std::cerr << "Exception Python levée :" << std::endl;
 			std::cerr << err.what() << std::endl;
+			std::system("pause");
+			exit(1);
 		}
 		return {};
 	}
@@ -119,10 +130,11 @@ int main()
 	RealNVPwrapper realNVP{ 2, 256, 8, 1e-4, false };
 
 	std::cout << "Step 1 : Training RealNVP" << std::endl;
-	realNVP.train();
+	UniformDistribution dist{ -1, 1 };
+	samples_t trainData = dist.generate(3000);
+	realNVP.train(trainData);
 
 	std::cout << "Step 2 : Loading an example Numpy array" << std::endl;
-	UniformDistribution dist{ 0, 1 };
 	samples_t samples = dist.generate(200);
 
 	std::cout << "Step 3 : Warping the samples using RealNVP and catching the result" << std::endl;
