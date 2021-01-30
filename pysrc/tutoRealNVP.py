@@ -79,8 +79,8 @@ class RealNVP(keras.Model):
         self.num_coupling_layers = num_coupling_layers
 
         # Distribution of the latent space.
-        self.distribution = tfp.distributions.MultivariateNormalDiag(
-            loc=[0.0,0.0], scale_diag=[1.0,1.0]
+        self.distribution = tfp.distributions.Uniform(
+            low=[0.0,0.0], high=[1.0,1.0]
         )
         self.masks = np.array(
             [[0, 1], [1, 0]] * (num_coupling_layers // 2), dtype="float32"
@@ -97,6 +97,10 @@ class RealNVP(keras.Model):
         return [self.loss_tracker]
 
     def call(self, x, training=True):
+        
+        # logit
+        x = -tf.math.log((1 / x) - 1)
+        
         log_det_inv = 0
         direction = 1
         if training:
@@ -115,12 +119,19 @@ class RealNVP(keras.Model):
             )
             log_det_inv += gate * tf.reduce_sum(s,[1])
     
+        # inverse logit
+        x = 1 / (1 + tf.math.exp(-x))
+
         return x, log_det_inv
 
     def log_loss(self, x):
         y, logdet = self(x);
-        log_likelihood = self.distribution.log_prob(y) + logdet
-        return -tf.reduce_mean(log_likelihood)
+        log_prob = self.distribution.log_prob(y)
+        log_prob = tf.math.reduce_sum(log_prob, axis=1);
+        #log_prob = log_prob[:, 0] * log_prob[:, 1]
+        #log_likelihood = self.distribution.log_prob(y) + logdet
+        #return -tf.reduce_mean(log_likelihood)
+        return -tf.reduce_sum(log_prob + logdet)
 
     def train_step(self, data):
         with tf.GradientTape() as tape:

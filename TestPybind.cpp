@@ -130,7 +130,7 @@ int main()
 	RealNVPwrapper realNVP{ 2, 256, 8, 1e-4, false };
 
 	std::cout << "Step 1 : Training RealNVP" << std::endl;
-	UniformDistribution dist{ -1, 1 };
+	UniformDistribution dist{ 0, 1 };
 	samples_t trainData = dist.generate(3000);
 	realNVP.train(trainData);
 
